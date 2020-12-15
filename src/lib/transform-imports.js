@@ -12,7 +12,7 @@ import { parse } from 'es-module-lexer/dist/lexer.js';
  * @param {ResolveFn?} [options.resolveId] Return a replacement for import specifiers
  * @param {ResolveFn?} [options.resolveDynamicImport] `false` preserves, `null` falls back to resolveId()
  */
-export async function transformImports(code, id, { resolveImportMeta, resolveId, resolveDynamicImport } = {}) {
+export async function transformImports(code, id, { resolveImportMeta, resolveId, resolveDynamicImport, invalidate } = {}) {
 	const [imports] = await parse(code, id);
 	let out = '';
 	let offset = 0;
@@ -134,7 +134,11 @@ export async function transformImports(code, id, { resolveImportMeta, resolveId,
 		})
 	);
 
-	out = out.replace(/%%_RESOLVE_#\d+#_%%/g, s => mapping.get(s));
+	out = out.replace(/%%_RESOLVE_#\d+#_%%/g, s => {
+		console.log(s);
+		console.log(mapping.get(s));
+		return mapping.get(s);
+	});
 
 	return out;
 }

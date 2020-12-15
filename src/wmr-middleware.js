@@ -264,10 +264,15 @@ export const TRANSFORMS = {
 	},
 
 	// Handle individual JavaScript modules
-	async js({ id, file, prefix, res, cwd, out, NonRollup }) {
+	async js(fullRequest) {
+		const { id, file, prefix, res, cwd, out, NonRollup, req } = fullRequest;
+
+		const { chain } = req.query;
+
 		res.setHeader('Content-Type', 'application/javascript;charset=utf-8');
 
 		const cacheKey = id.replace(/^[\0\b]/, '');
+		console.log('update', id, WRITE_CACHE.has(cacheKey));
 		if (WRITE_CACHE.has(cacheKey)) return WRITE_CACHE.get(cacheKey);
 
 		const resolved = await NonRollup.resolveId(id);
@@ -275,6 +280,7 @@ export const TRANSFORMS = {
 		let result = resolvedId && (await NonRollup.load(resolvedId));
 
 		let code = typeof result == 'object' ? result && result.code : result;
+		console.log('code', code);
 
 		if (code == null || code === false) {
 			if (prefix) file = file.replace(prefix, '');
