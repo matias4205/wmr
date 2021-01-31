@@ -138,7 +138,6 @@
 		"puppeteer": "^3.3.0",
 		"rollup": "^2.21.0",
 		"rollup-plugin-preserve-shebang": "^1.0.1",
-		"rollup-plugin-swc": "^0.1.4",
 		"sade": "^1.7.3",
 		"semver": "^7.3.2",
 		"sirv": "^1.0.6",
@@ -156,8 +155,5 @@
 	},
 	"engines": {
 		"node": ">=12"
-	},
-	"dependencies": {
-		"@swc/core": "^1.2.47"
 	}
 }
