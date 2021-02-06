@@ -87,15 +87,19 @@ const swcPlugin = (options = {}) => ({
 	name: 'swc',
 	async transform(code, filename) {
 		options.filename = filename;
+		console.log('transforming', filename);
 		const result = await swc.transform(code, options);
 		return result;
 	}
 });
 
-export const createSwcPlugin = type => {
+const createSwcPlugin = type => {
 	if (type === 'typescript') {
 		return swcPlugin({
-			plugin: m => new JSXImportAppender().visitProgram(m),
+			plugin: m => {
+				console.log('mod', m);
+				return new JSXImportAppender().visitModule(m);
+			},
 			jsc: {
 				loose: true,
 				transform: {
@@ -109,13 +113,12 @@ export const createSwcPlugin = type => {
 					tsx: true,
 					dynamicImport: true
 				},
-				target: 'es2017'
+				target: 'es2018'
 			}
 		});
 	} else if (type === 'jsx') {
 		return swcPlugin({
 			plugin: m => new JSXImportAppender().visitProgram(m),
-			test: '.*.ts$',
 			jsc: {
 				loose: true,
 				transform: {
@@ -129,8 +132,10 @@ export const createSwcPlugin = type => {
 					jsx: true,
 					dynamicImport: true
 				},
-				target: 'es2017'
+				target: 'es2018'
 			}
 		});
 	}
 };
+
+export default createSwcPlugin;
